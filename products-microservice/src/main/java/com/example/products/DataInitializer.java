@@ -23,7 +23,12 @@ public class DataInitializer {
 
             // Add a sample admin user
             if (userRepository.findByUsername("admin").isEmpty()) {
-                userRepository.save(new User(null, "admin", "admin123", "ADMIN"));
+                userRepository.save(new User(null, "admin", "admin123", "ADMIN", "admin@example.com", "+1-555-0123"));
+            }
+            
+            // Add a sample regular user
+            if (userRepository.findByUsername("user").isEmpty()) {
+                userRepository.save(new User(null, "user", "user123", "USER", "user@example.com", "+1-555-0456"));
             }
         };
     }
