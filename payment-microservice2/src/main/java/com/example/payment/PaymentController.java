@@ -1,6 +1,7 @@
 package com.example.payment;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,11 @@ public class PaymentController {
     @GetMapping("/{id}")
     public Optional<Payment> getPaymentById(@PathVariable Long id) {
         return paymentRepository.findById(id);
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Payment Service is healthy! Status: UP");
     }
 
     @PostMapping

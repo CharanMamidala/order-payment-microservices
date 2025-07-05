@@ -28,6 +28,11 @@ public class OrderController {
         return orderRepository.findById(id);
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Order Service is healthy! Status: UP");
+    }
+
     @PostMapping
     public Order createOrder(@RequestBody Order order) {
         // Save the order first

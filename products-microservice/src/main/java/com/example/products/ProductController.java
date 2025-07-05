@@ -1,6 +1,7 @@
 package com.example.products;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,5 +54,10 @@ public class ProductController {
         topProducts.add(new Product(null, "Glenfiddich", "Whiskey", new java.math.BigDecimal("14.99"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f943.png", "Single malt Scotch."));
         topProducts.add(new Product(null, "Glenmorangie", "Whiskey", new java.math.BigDecimal("13.99"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f943.png", "Highland single malt Scotch."));
         return topProducts;
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Products Service is healthy! Status: UP");
     }
 } 
