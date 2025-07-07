@@ -14,50 +14,118 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
+    // Get all active products (for users to browse)
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<Product> getAllActiveProducts() {
+        return productRepository.findByIsActive(true);
     }
 
+    // Get products by specific admin/business
+    @GetMapping("/admin/{adminId}")
+    public List<Product> getProductsByAdmin(@PathVariable Long adminId) {
+        return productRepository.findByAdminIdAndIsActive(adminId, true);
+    }
+
+    // Get products by specific store
+    @GetMapping("/store/{storeId}")
+    public List<Product> getProductsByStore(@PathVariable Long storeId) {
+        return productRepository.findByStoreIdAndIsActive(storeId, true);
+    }
+
+    // Get products by admin and store
+    @GetMapping("/admin/{adminId}/store/{storeId}")
+    public List<Product> getProductsByAdminAndStore(@PathVariable Long adminId, @PathVariable Long storeId) {
+        return productRepository.findByAdminIdAndStoreIdAndIsActive(adminId, storeId, true);
+    }
+
+    // Get product by id
     @GetMapping("/{id}")
     public Optional<Product> getProductById(@PathVariable Long id) {
         return productRepository.findById(id);
     }
 
+    // ADMIN: Add new product
     @PostMapping
-    public Product addProduct(@RequestBody Product product) {
+    public Product addProduct(@RequestBody Product product, @RequestParam Long adminId, @RequestParam Long storeId) {
+        product.setAdminId(adminId);
+        product.setStoreId(storeId);
+        product.setIsActive(true);
+        if (product.getStockQuantity() == null) {
+            product.setStockQuantity(0);
+        }
         return productRepository.save(product);
     }
 
+    // ADMIN: Update product
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        product.setId(id);
-        return productRepository.save(product);
+    public Product updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            
+            if (updatedProduct.getName() != null) {
+                product.setName(updatedProduct.getName());
+            }
+            if (updatedProduct.getCategory() != null) {
+                product.setCategory(updatedProduct.getCategory());
+            }
+            if (updatedProduct.getPrice() != null) {
+                product.setPrice(updatedProduct.getPrice());
+            }
+            if (updatedProduct.getImageUrl() != null) {
+                product.setImageUrl(updatedProduct.getImageUrl());
+            }
+            if (updatedProduct.getDescription() != null) {
+                product.setDescription(updatedProduct.getDescription());
+            }
+            if (updatedProduct.getStockQuantity() != null) {
+                product.setStockQuantity(updatedProduct.getStockQuantity());
+            }
+            
+            return productRepository.save(product);
+        }
+        throw new RuntimeException("Product not found");
     }
 
+    // ADMIN: Deactivate product
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<String> deactivateProduct(@PathVariable Long id) {
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            product.setIsActive(false);
+            productRepository.save(product);
+            return ResponseEntity.ok("Product deactivated successfully");
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // ADMIN: Activate product
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<String> activateProduct(@PathVariable Long id) {
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            product.setIsActive(true);
+            productRepository.save(product);
+            return ResponseEntity.ok("Product activated successfully");
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // ADMIN: Delete product
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
-        productRepository.deleteById(id);
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+        if (productRepository.existsById(id)) {
+            productRepository.deleteById(id);
+            return ResponseEntity.ok("Product deleted successfully");
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/top")
-    public List<Product> getTopProducts() {
-        List<Product> topProducts = new java.util.ArrayList<>();
-        // Top 4 beers
-        topProducts.add(new Product(null, "Budweiser", "Beer", new java.math.BigDecimal("4.99"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f37a.png", "Classic American lager."));
-        topProducts.add(new Product(null, "Miller Lite", "Beer", new java.math.BigDecimal("4.49"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f37a.png", "Light American pilsner."));
-        topProducts.add(new Product(null, "Corona", "Beer", new java.math.BigDecimal("5.49"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f37a.png", "Mexican pale lager."));
-        topProducts.add(new Product(null, "Heineken", "Beer", new java.math.BigDecimal("5.99"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f37a.png", "Dutch pale lager."));
-        // Top 4 whiskeys
-        topProducts.add(new Product(null, "Jameson", "Whiskey", new java.math.BigDecimal("7.99"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f943.png", "Famous Irish whiskey."));
-        topProducts.add(new Product(null, "Jack Daniel's", "Whiskey", new java.math.BigDecimal("8.99"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f943.png", "Tennessee whiskey."));
-        topProducts.add(new Product(null, "Glenfiddich", "Whiskey", new java.math.BigDecimal("14.99"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f943.png", "Single malt Scotch."));
-        topProducts.add(new Product(null, "Glenmorangie", "Whiskey", new java.math.BigDecimal("13.99"), "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f943.png", "Highland single malt Scotch."));
-        return topProducts;
-    }
-
+    // Health check endpoint
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck() {
-        return ResponseEntity.ok("Products Service is healthy! Status: UP");
+        return ResponseEntity.ok("Product Service is healthy! Status: UP");
     }
 } 

@@ -315,14 +315,19 @@
         </div>
         <div id="userInfo" style="margin-left:auto; margin-right:2em; font-size:1em; font-weight:500; display: flex; align-items: center; gap: 1em;">
             <span id="userDisplay" style="background: rgba(255,255,255,0.1); padding: 0.5em 1em; border-radius: 20px; display: none;"></span>
+            <button id="profileBtn" style="display:none; background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.3); border-radius:50%; width:36px; height:36px; font-size:1.2em; cursor:pointer; transition: all 0.2s; display:flex; align-items:center; justify-content:center;" title="Profile">👤</button>
             <button id="logoutBtn" style="display:none; background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.3); border-radius:6px; padding:0.4em 1em; font-size:0.9em; cursor:pointer; transition: all 0.2s;">Logout</button>
         </div>
     </div>
-    <div class="sidebar">
+            <div class="sidebar">
         <div class="nav-title">Menu</div>
         <a class="nav-link" href="#products">Products</a>
         <a class="nav-link" href="#orders">Orders</a>
+        <a class="nav-link" id="storeMgmtMenuLink" href="#storemgmt" style="display:none;">Store Management</a>
+        <a class="nav-link" id="adminMgmtMenuLink" href="#adminmgmt" style="display:none;">Admin Management</a>
+        <a class="nav-link" id="userMgmtMenuLink" href="#usermgmt" style="display:none;">User Management</a>
         <a class="nav-link" id="usersMenuLink" href="#users" style="display:none;">Users</a>
+        <a class="nav-link" id="profileMenuLink" href="#profile" style="display:none;">Profile</a>
         <!-- Add more links here if needed -->
     </div>
     <div class="main-content">
@@ -397,6 +402,175 @@
                     <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- Profile Management Section -->
+        <div id="profileSection" style="display:none; margin-bottom:2em;">
+            <div class="catalog-title" style="background:#ff6b35;">Profile Management</div>
+            <div class="category-divider" style="background:#ff6b35;"></div>
+            <div style="display:flex; gap:1em; margin-bottom:1.5em;">
+                <button id="backToStoreFromProfileBtn" style="background:#eee; color:#2a8f2a; border:none; border-radius:6px; padding:0.4em 1em; font-size:1em; cursor:pointer; margin-left:auto;">Back to Store</button>
+            </div>
+            <div id="profileForm" style="max-width:500px; background:#fff; padding:2em; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+                <h3 style="margin-top:0; color:#ff6b35; font-size:1.5em; margin-bottom:1.5em;">Edit Your Profile</h3>
+                <form id="updateProfileForm">
+                    <div style="margin-bottom:1.5em;">
+                        <label style="display:block; margin-bottom:0.5em; color:#495057; font-weight:500;">Username</label>
+                        <input type="text" id="profileUsername" required style="width:100%; padding:0.8em 1em; border:2px solid #e9ecef; border-radius:8px; font-size:1em; transition:border-color 0.3s; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom:1.5em;">
+                        <label style="display:block; margin-bottom:0.5em; color:#495057; font-weight:500;">Email</label>
+                        <input type="email" id="profileEmail" required style="width:100%; padding:0.8em 1em; border:2px solid #e9ecef; border-radius:8px; font-size:1em; transition:border-color 0.3s; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom:1.5em;">
+                        <label style="display:block; margin-bottom:0.5em; color:#495057; font-weight:500;">Phone Number</label>
+                        <input type="tel" id="profilePhone" style="width:100%; padding:0.8em 1em; border:2px solid #e9ecef; border-radius:8px; font-size:1em; transition:border-color 0.3s; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom:1.5em;">
+                        <label style="display:block; margin-bottom:0.5em; color:#495057; font-weight:500;">New Password (leave blank to keep current)</label>
+                        <input type="password" id="profilePassword" style="width:100%; padding:0.8em 1em; border:2px solid #e9ecef; border-radius:8px; font-size:1em; transition:border-color 0.3s; box-sizing:border-box;">
+                    </div>
+                    <button type="submit" style="width:100%; background:linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color:white; border:none; border-radius:8px; padding:0.9em; font-size:1.1em; font-weight:600; cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; box-shadow:0 4px 15px rgba(255,107,53,0.3);">Update Profile</button>
+                </form>
+                <div id="profileStatus" style="margin-top:1em; padding:0.8em; border-radius:6px; display:none;"></div>
+            </div>
+        </div>
+
+        <!-- Super Admin: Admin Management Section -->
+        <div id="adminMgmtSection" style="display:none; margin-bottom:2em;">
+            <div class="catalog-title" style="background:#6c63ff;">Admin Management</div>
+            <div class="category-divider" style="background:#6c63ff;"></div>
+            <div style="display:flex; gap:1em; margin-bottom:1.5em;">
+                <button id="showAddAdminBtn" class="order-btn" style="background:#6c63ff;">Add Admin</button>
+                <button id="showListAdminsBtn" class="order-btn" style="background:#2a8f2a;">List Admins</button>
+                <button id="backToStoreFromAdminBtn" style="background:#eee; color:#2a8f2a; border:none; border-radius:6px; padding:0.4em 1em; font-size:1em; cursor:pointer; margin-left:auto;">Back to Store</button>
+            </div>
+            <div id="addAdminSection" style="display:none;">
+                <form id="addAdminForm" style="max-width:350px; margin-bottom:1em;">
+                    <label>Username:<br><input type="text" id="newAdminUsername" required style="width:100%"></label><br><br>
+                    <label>Password:<br><input type="password" id="newAdminPassword" required style="width:100%"></label><br><br>
+                    <label>Email:<br><input type="email" id="newAdminEmail" required style="width:100%"></label><br><br>
+                    <label>Phone Number:<br><input type="tel" id="newAdminPhone" style="width:100%"></label><br><br>
+                    <label>Assign to Store:<br><select id="assignStoreToAdminSelect" required style="width:100%"></select></label><br><br>
+                    <label>Business Name:<br><input type="text" id="newAdminBusinessName" style="width:100%"></label><br><br>
+                    <label>Business Type:<br><input type="text" id="newAdminBusinessType" style="width:100%"></label><br><br>
+                    <label>Address:<br><input type="text" id="newAdminAddress" style="width:100%"></label><br><br>
+                    <button type="submit" class="order-btn">Add Admin</button>
+                </form>
+                <div id="addAdminStatus" style="margin-bottom:1em;"></div>
+            </div>
+            <div id="listAdminsSection" style="display:none;">
+                <table id="adminsTable" style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden;">
+                    <thead style="background:#e0f7fa;">
+                        <tr>
+                            <th style="padding:0.7em 1em; text-align:left;">Username</th>
+                            <th style="padding:0.7em 1em; text-align:left;">Email</th>
+                            <th style="padding:0.7em 1em; text-align:left;">Phone</th>
+                            <th style="padding:0.7em 1em; text-align:left;">Business</th>
+                            <th style="padding:0.7em 1em; text-align:left;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Super Admin: User Management Section -->
+        <div id="userMgmtSection" style="display:none; margin-bottom:2em;">
+            <div class="catalog-title" style="background:#ffb300;">User Management</div>
+            <div class="category-divider" style="background:#ffb300;"></div>
+            <div style="display:flex; gap:1em; margin-bottom:1.5em;">
+                <button id="showAddUserSuperBtn" class="order-btn" style="background:#ffb300;">Add User</button>
+                <button id="showListUsersSuperBtn" class="order-btn" style="background:#2a8f2a;">List Users</button>
+                <button id="backToStoreFromUserBtn" style="background:#eee; color:#2a8f2a; border:none; border-radius:6px; padding:0.4em 1em; font-size:1em; cursor:pointer; margin-left:auto;">Back to Store</button>
+            </div>
+            <div id="addUserSuperSection" style="display:none;">
+                <form id="addUserSuperForm" style="max-width:350px; margin-bottom:1em;">
+                    <label>Username:<br><input type="text" id="newUserSuperUsername" required style="width:100%"></label><br><br>
+                    <label>Password:<br><input type="password" id="newUserSuperPassword" required style="width:100%"></label><br><br>
+                    <label>Email:<br><input type="email" id="newUserSuperEmail" required style="width:100%"></label><br><br>
+                    <label>Phone Number:<br><input type="tel" id="newUserSuperPhone" style="width:100%"></label><br><br>
+                    <label>Assign to Store:<br><select id="assignStoreToUserSelect" required style="width:100%"></select></label><br><br>
+                    <label>Assign to Admin:<br><select id="assignAdminSelect" required style="width:100%"></select></label><br><br>
+                    <button type="submit" class="order-btn">Add User</button>
+                </form>
+                <div id="addUserSuperStatus" style="margin-bottom:1em;"></div>
+            </div>
+            <div id="listUsersSuperSection" style="display:none;">
+                <table id="usersSuperTable" style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden;">
+                    <thead style="background:#e0f7fa;">
+                        <tr>
+                            <th style="padding:0.7em 1em; text-align:left;">Username</th>
+                            <th style="padding:0.7em 1em; text-align:left;">Email</th>
+                            <th style="padding:0.7em 1em; text-align:left;">Phone</th>
+                            <th style="padding:0.7em 1em; text-align:left;">Admin</th>
+                            <th style="padding:0.7em 1em; text-align:left;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersSuperTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Super Admin: Store Management Section -->
+    <div id="storeMgmtSection" style="display:none; margin-bottom:2em;">
+        <div class="catalog-title" style="background:#9c27b0;">Store Management</div>
+        <div class="category-divider" style="background:#9c27b0;"></div>
+        <div style="display:flex; gap:1em; margin-bottom:1.5em;">
+            <button id="showAddStoreBtn" class="order-btn" style="background:#9c27b0;">Add Store</button>
+            <button id="showListStoresBtn" class="order-btn" style="background:#2a8f2a;">List Stores</button>
+            <button id="backToStoreFromStoreMgmtBtn" style="background:#eee; color:#2a8f2a; border:none; border-radius:6px; padding:0.4em 1em; font-size:1em; cursor:pointer; margin-left:auto;">Back to Store</button>
+        </div>
+        <div id="addStoreSection" style="display:none;">
+            <form id="addStoreForm" style="max-width:400px; margin-bottom:1em;">
+                <label>Store Name:<br><input type="text" id="newStoreName" required style="width:100%" placeholder="Enter store name"></label><br><br>
+                <label>Store Address:<br><input type="text" id="newStoreAddress" required style="width:100%" placeholder="Enter store address"></label><br><br>
+                <button type="submit" class="order-btn">Add Store</button>
+            </form>
+            <div id="addStoreStatus" style="margin-bottom:1em;"></div>
+        </div>
+        <div id="listStoresSection" style="display:none;">
+            <table id="storesTable" style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden;">
+                <thead style="background:#e0f7fa;">
+                    <tr>
+                        <th style="padding:0.7em 1em; text-align:left;">Store ID & Name</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Type</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Address</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Phone</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Email</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Status</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="storesTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Super Admin: Payments Section -->
+    <div id="paymentsSection" style="display:none; margin-bottom:2em;">
+        <div class="catalog-title" style="background:#e91e63;">Payment Tracking</div>
+        <div class="category-divider" style="background:#e91e63;"></div>
+        <div style="display:flex; gap:1em; margin-bottom:1.5em;">
+            <button id="backToStoreFromPaymentsBtn" style="background:#eee; color:#2a8f2a; border:none; border-radius:6px; padding:0.4em 1em; font-size:1em; cursor:pointer; margin-left:auto;">Back to Store</button>
+        </div>
+        <div id="paymentsListSection">
+            <table id="paymentsTable" style="width:100%; border-collapse:collapse; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden;">
+                <thead style="background:#e0f7fa;">
+                    <tr>
+                        <th style="padding:0.7em 1em; text-align:left;">Payment ID</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Order ID</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Amount</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Status</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Method</th>
+                        <th style="padding:0.7em 1em; text-align:left;">User ID</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Admin ID</th>
+                        <th style="padding:0.7em 1em; text-align:left;">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentsTableBody"></tbody>
+            </table>
         </div>
     </div>
 
@@ -846,53 +1020,7 @@
         document.getElementById('loginModal').style.display = 'none';
         document.getElementById('loginForm').reset();
     }
-    function updateUserUI() {
-        const userDisplay = document.getElementById('userDisplay');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const usersMenuLink = document.getElementById('usersMenuLink');
-        const usersSection = document.getElementById('usersSection');
-        const addProductBtn = document.getElementById('addProductBtn');
-        const productsSections = [
-            document.getElementById('food-catalog').parentElement,
-            document.getElementById('beers-catalog').parentElement,
-            document.getElementById('whiskey-catalog').parentElement,
-            document.getElementById('orders'),
-            document.querySelector('.order-list')
-        ];
-        
-        if (currentUser) {
-            const userTypeIcon = currentUser.userType === 'ADMIN' ? '👑' : '👤';
-            userDisplay.innerHTML = `${userTypeIcon} ${currentUser.username} <span style="font-size:0.8em; opacity:0.8;">(${currentUser.userType})</span>`;
-            userDisplay.style.display = '';
-            logoutBtn.style.display = '';
-            
-            if (currentUser.userType === 'ADMIN') {
-                addProductBtn.style.display = '';
-                usersMenuLink.style.display = '';
-                document.getElementById('showAddUserBtn').style.display = '';
-                document.getElementById('showListUsersBtn').style.display = '';
-                document.getElementById('addUserSection').style.display = '';
-                document.getElementById('listUsersSection').style.display = 'none';
-            } else {
-                addProductBtn.style.display = 'none';
-                usersMenuLink.style.display = 'none';
-                document.getElementById('showAddUserBtn').style.display = 'none';
-                document.getElementById('showListUsersBtn').style.display = 'none';
-                document.getElementById('addUserSection').style.display = 'none';
-                document.getElementById('listUsersSection').style.display = 'none';
-            }
-        } else {
-            userDisplay.style.display = 'none';
-            logoutBtn.style.display = 'none';
-            addProductBtn.style.display = 'none';
-            document.getElementById('showAddUserBtn').style.display = 'none';
-            document.getElementById('showListUsersBtn').style.display = 'none';
-            document.getElementById('addUserSection').style.display = 'none';
-            document.getElementById('listUsersSection').style.display = 'none';
-        }
-        usersSection.style.display = 'none';
-        productsSections.forEach(sec => { if (sec) sec.style.display = ''; });
-    }
+
     document.getElementById('logoutBtn').onclick = function() {
         currentUser = null;
         localStorage.removeItem('user');
@@ -1053,6 +1181,836 @@
         document.getElementById('listUsersSection').style.display = '';
         fetchUsers();
     }
+
+    // Profile Management Functions
+    function updateUserUI() {
+        const userDisplay = document.getElementById('userDisplay');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const profileBtn = document.getElementById('profileBtn');
+        const profileMenuLink = document.getElementById('profileMenuLink');
+        const addProductBtn = document.getElementById('addProductBtn');
+        const usersMenuLink = document.getElementById('usersMenuLink');
+        const adminMgmtMenuLink = document.getElementById('adminMgmtMenuLink');
+        const userMgmtMenuLink = document.getElementById('userMgmtMenuLink');
+        const storeMgmtMenuLink = document.getElementById('storeMgmtMenuLink');
+        
+        if (currentUser) {
+            const userTypeIcon = currentUser.userType === 'SUPER_ADMIN' ? '👑' : currentUser.userType === 'ADMIN' ? '👨‍💼' : '👤';
+            userDisplay.innerHTML = `${userTypeIcon} ${currentUser.username} <span style="font-size:0.8em; opacity:0.8;">(${currentUser.userType})</span>`;
+            userDisplay.style.display = '';
+            logoutBtn.style.display = '';
+            profileBtn.style.display = '';
+            profileMenuLink.style.display = '';
+            
+            if (currentUser.userType === 'SUPER_ADMIN') {
+                // Super Admin: Only see Store Management, Admin Management, User Management, Orders, and Payments
+                addProductBtn.style.display = 'none';
+                usersMenuLink.style.display = 'none';
+                storeMgmtMenuLink.style.display = '';
+                adminMgmtMenuLink.style.display = '';
+                userMgmtMenuLink.style.display = '';
+                document.getElementById('showAddUserBtn').style.display = 'none';
+                document.getElementById('showListUsersBtn').style.display = 'none';
+                document.getElementById('addUserSection').style.display = 'none';
+                document.getElementById('listUsersSection').style.display = 'none';
+                
+                // Hide products sections for Super Admin
+                const productsSections = [
+                    document.getElementById('food-catalog').parentElement,
+                    document.getElementById('beers-catalog').parentElement,
+                    document.getElementById('whiskey-catalog').parentElement
+                ];
+                productsSections.forEach(sec => { if (sec) sec.style.display = 'none'; });
+                
+                // Show orders and payments for Super Admin
+                document.getElementById('orders').style.display = '';
+                document.querySelector('.order-list').style.display = '';
+                
+                // Load Super Admin data
+                loadSuperAdminData();
+                
+            } else if (currentUser.userType === 'ADMIN') {
+                // Admin: Only see their own products and users under them
+                addProductBtn.style.display = '';
+                usersMenuLink.style.display = '';
+                storeMgmtMenuLink.style.display = 'none';
+                adminMgmtMenuLink.style.display = 'none';
+                userMgmtMenuLink.style.display = 'none';
+                document.getElementById('showAddUserBtn').style.display = '';
+                document.getElementById('showListUsersBtn').style.display = '';
+                document.getElementById('addUserSection').style.display = '';
+                document.getElementById('listUsersSection').style.display = 'none';
+                
+                // Show products sections for Admin
+                const productsSections = [
+                    document.getElementById('food-catalog').parentElement,
+                    document.getElementById('beers-catalog').parentElement,
+                    document.getElementById('whiskey-catalog').parentElement
+                ];
+                productsSections.forEach(sec => { if (sec) sec.style.display = ''; });
+                
+                // Hide orders and payments for Admin
+                document.getElementById('orders').style.display = 'none';
+                document.querySelector('.order-list').style.display = 'none';
+                
+                // Load Admin's own products and users
+                loadAdminData();
+                
+            } else {
+                // User: Only see products from their assigned admin
+                addProductBtn.style.display = 'none';
+                usersMenuLink.style.display = 'none';
+                storeMgmtMenuLink.style.display = 'none';
+                adminMgmtMenuLink.style.display = 'none';
+                userMgmtMenuLink.style.display = 'none';
+                document.getElementById('showAddUserBtn').style.display = 'none';
+                document.getElementById('showListUsersBtn').style.display = 'none';
+                document.getElementById('addUserSection').style.display = 'none';
+                document.getElementById('listUsersSection').style.display = 'none';
+                
+                // Show products sections for User
+                const productsSections = [
+                    document.getElementById('food-catalog').parentElement,
+                    document.getElementById('beers-catalog').parentElement,
+                    document.getElementById('whiskey-catalog').parentElement
+                ];
+                productsSections.forEach(sec => { if (sec) sec.style.display = ''; });
+                
+                // Hide orders and payments for User
+                document.getElementById('orders').style.display = 'none';
+                document.querySelector('.order-list').style.display = 'none';
+                
+                // Load User's assigned admin products
+                loadUserData();
+            }
+        } else {
+            userDisplay.style.display = 'none';
+            logoutBtn.style.display = 'none';
+            profileBtn.style.display = 'none';
+            profileMenuLink.style.display = 'none';
+            addProductBtn.style.display = 'none';
+            adminMgmtMenuLink.style.display = 'none';
+            userMgmtMenuLink.style.display = 'none';
+            document.getElementById('showAddUserBtn').style.display = 'none';
+            document.getElementById('showListUsersBtn').style.display = 'none';
+            document.getElementById('addUserSection').style.display = 'none';
+            document.getElementById('listUsersSection').style.display = 'none';
+        }
+        document.getElementById('usersSection').style.display = 'none';
+        document.getElementById('profileSection').style.display = 'none';
+    }
+
+    // Super Admin Functions
+    async function loadSuperAdminData() {
+        try {
+            // Load all admins
+            const adminsResponse = await fetch('http://localhost:8082/users/admins');
+            const admins = await adminsResponse.json();
+            displayAdmins(admins);
+            
+            // Load all users
+            const usersResponse = await fetch('http://localhost:8082/users/all');
+            const users = await usersResponse.json();
+            displayUsers(users);
+            
+            // Load all orders
+            const ordersResponse = await fetch('http://localhost:8081/orders');
+            const orders = await ordersResponse.json();
+            displayOrders(orders);
+            
+            // Load all payments
+            const paymentsResponse = await fetch('http://localhost:8080/payments');
+            const payments = await paymentsResponse.json();
+            displayPayments(payments);
+            
+        } catch (error) {
+            console.error('Error loading Super Admin data:', error);
+            showToast('Error loading data', 'error');
+        }
+    }
+
+    function displayAdmins(admins) {
+        const adminsTableBody = document.getElementById('adminsTableBody');
+        if (adminsTableBody) {
+            adminsTableBody.innerHTML = admins.map(admin => `
+                <tr>
+                    <td style="padding:0.7em 1em;">${admin.username}</td>
+                    <td style="padding:0.7em 1em;">${admin.email || ''}</td>
+                    <td style="padding:0.7em 1em;">${admin.phoneNumber || ''}</td>
+                    <td style="padding:0.7em 1em;">${admin.businessName || ''} (${admin.businessType || ''})</td>
+                    <td style="padding:0.7em 1em;">
+                        <button onclick="deleteAdmin(${admin.id})" class="btn-delete">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    function displayUsers(users) {
+        const usersTableBody = document.getElementById('usersTableBody');
+        if (usersTableBody) {
+            usersTableBody.innerHTML = users.map(user => `
+                <tr>
+                    <td style="padding:0.7em 1em;">${user.username}</td>
+                    <td style="padding:0.7em 1em;">${user.email || ''}</td>
+                    <td style="padding:0.7em 1em;">${user.phoneNumber || ''}</td>
+                    <td style="padding:0.7em 1em;">${user.adminId || ''}</td>
+                    <td style="padding:0.7em 1em;">
+                        <button onclick="deleteUser(${user.id})" class="btn-delete">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    function displayOrders(orders) {
+        const orderList = document.querySelector('.order-list');
+        if (orderList) {
+            orderList.innerHTML = orders.map(order => `
+                <div class="order-item">
+                    <h4>Order #${order.id}</h4>
+                    <p><strong>Description:</strong> ${order.description}</p>
+                    <p><strong>Amount:</strong> $${order.amount}</p>
+                    <p><strong>User ID:</strong> ${order.userId}</p>
+                    <p><strong>Admin ID:</strong> ${order.adminId}</p>
+                    <p><strong>Status:</strong> ${order.status}</p>
+                    <p><strong>Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}</p>
+                </div>
+            `).join('');
+        }
+    }
+
+    function displayPayments(payments) {
+        const paymentsTableBody = document.getElementById('paymentsTableBody');
+        if (paymentsTableBody) {
+            paymentsTableBody.innerHTML = payments.map(payment => `
+                <tr>
+                    <td style="padding:0.7em 1em;">${payment.id}</td>
+                    <td style="padding:0.7em 1em;">${payment.orderId}</td>
+                    <td style="padding:0.7em 1em;">$${payment.amount}</td>
+                    <td style="padding:0.7em 1em;">${payment.status}</td>
+                    <td style="padding:0.7em 1em;">${payment.paymentMethod}</td>
+                    <td style="padding:0.7em 1em;">${payment.userId}</td>
+                    <td style="padding:0.7em 1em;">${payment.adminId}</td>
+                    <td style="padding:0.7em 1em;">${new Date(payment.createdAt).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // Admin Functions
+    async function loadAdminData() {
+        try {
+            // Load admin's own products
+            const productsResponse = await fetch(`http://localhost:8082/products/admin/${currentUser.id}`);
+            const products = await productsResponse.json();
+            displayProducts(products);
+            
+            // Load users under this admin
+            const usersResponse = await fetch(`http://localhost:8082/users/admin/${currentUser.id}/users`);
+            const users = await usersResponse.json();
+            displayUsers(users);
+            
+        } catch (error) {
+            console.error('Error loading Admin data:', error);
+            showToast('Error loading data', 'error');
+        }
+    }
+
+    // Display Products Function
+    function displayProducts(products) {
+        // Group products by category
+        const beers = products.filter(p => p.category === 'Beer');
+        const whiskeys = products.filter(p => p.category === 'Whiskey');
+        const foods = products.filter(p => p.category === 'Food');
+        
+        // Update beer catalog
+        const beerCatalog = document.getElementById('beers-catalog');
+        if (beerCatalog) {
+            beerCatalog.innerHTML = beers.map(product => `
+                <div class="product-card">
+                    <img src="${product.imageUrl || BEER_STICKER}" alt="${product.name}" class="product-image">
+                    <h3>${product.name}</h3>
+                    <p class="price">$${product.price}</p>
+                    <p class="description">${product.description || ''}</p>
+                    ${currentUser && currentUser.userType === 'ADMIN' ? 
+                        `<button onclick="deleteProduct(${product.id})" class="btn-delete">Delete</button>` : 
+                        `<button onclick="addToCart('${product.name}', ${product.price})" class="add-to-cart-btn">Add to Cart</button>`
+                    }
+                </div>
+            `).join('');
+        }
+        
+        // Update whiskey catalog
+        const whiskeyCatalog = document.getElementById('whiskey-catalog');
+        if (whiskeyCatalog) {
+            whiskeyCatalog.innerHTML = whiskeys.map(product => `
+                <div class="product-card">
+                    <img src="${product.imageUrl || WHISKEY_STICKER}" alt="${product.name}" class="product-image">
+                    <h3>${product.name}</h3>
+                    <p class="price">$${product.price}</p>
+                    <p class="description">${product.description || ''}</p>
+                    ${currentUser && currentUser.userType === 'ADMIN' ? 
+                        `<button onclick="deleteProduct(${product.id})" class="btn-delete">Delete</button>` : 
+                        `<button onclick="addToCart('${product.name}', ${product.price})" class="add-to-cart-btn">Add to Cart</button>`
+                    }
+                </div>
+            `).join('');
+        }
+        
+        // Update food catalog
+        const foodCatalog = document.getElementById('food-catalog');
+        if (foodCatalog) {
+            foodCatalog.innerHTML = foods.map(product => `
+                <div class="product-card">
+                    <img src="${product.imageUrl || FOOD_STICKER}" alt="${product.name}" class="product-image">
+                    <h3>${product.name}</h3>
+                    <p class="price">$${product.price}</p>
+                    <p class="description">${product.description || ''}</p>
+                    ${currentUser && currentUser.userType === 'ADMIN' ? 
+                        `<button onclick="deleteProduct(${product.id})" class="btn-delete">Delete</button>` : 
+                        `<button onclick="addToCart('${product.name}', ${product.price})" class="add-to-cart-btn">Add to Cart</button>`
+                    }
+                </div>
+            `).join('');
+        }
+    }
+
+    // Delete Product Function
+    async function deleteProduct(productId) {
+        if (confirm('Are you sure you want to delete this product?')) {
+            try {
+                const response = await fetch(`${productsApi}/${productId}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    showToast('Product deleted successfully!');
+                    // Reload admin data
+                    loadAdminData();
+                } else {
+                    showToast('Failed to delete product', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                showToast('Error deleting product', 'error');
+            }
+        }
+    }
+
+    // User Functions
+    async function loadUserData() {
+        try {
+            // Load products from user's assigned admin
+            const productsResponse = await fetch(`http://localhost:8082/products/admin/${currentUser.adminId}`);
+            const products = await productsResponse.json();
+            displayProducts(products);
+            
+        } catch (error) {
+            console.error('Error loading User data:', error);
+            showToast('Error loading data', 'error');
+        }
+    }
+
+    // Profile button click handler
+    document.getElementById('profileBtn').onclick = function() {
+        showProfileSection();
+    };
+
+    // Profile menu link click handler
+    document.getElementById('profileMenuLink').onclick = function() {
+        showProfileSection();
+    };
+
+    // Back to store from profile
+    document.getElementById('backToStoreFromProfileBtn').onclick = function() {
+        document.getElementById('profileSection').style.display = 'none';
+        // Show all product/order sections
+        const productsSections = [
+            document.getElementById('food-catalog').parentElement,
+            document.getElementById('beers-catalog').parentElement,
+            document.getElementById('whiskey-catalog').parentElement,
+            document.getElementById('orders'),
+            document.querySelector('.order-list')
+        ];
+        productsSections.forEach(sec => { if (sec) sec.style.display = ''; });
+        window.location.hash = '#products';
+    };
+
+    function showProfileSection() {
+        // Hide all other sections
+        const productsSections = [
+            document.getElementById('food-catalog').parentElement,
+            document.getElementById('beers-catalog').parentElement,
+            document.getElementById('whiskey-catalog').parentElement,
+            document.getElementById('orders'),
+            document.querySelector('.order-list')
+        ];
+        productsSections.forEach(sec => { if (sec) sec.style.display = 'none'; });
+        document.getElementById('usersSection').style.display = 'none';
+        
+        // Show profile section
+        document.getElementById('profileSection').style.display = '';
+        
+        // Load current user data
+        loadUserProfile();
+        window.location.hash = '#profile';
+    }
+
+    async function loadUserProfile() {
+        if (!currentUser) return;
+        
+        try {
+            const res = await fetch(usersApi + '/profile/' + currentUser.id);
+            if (res.ok) {
+                const userProfile = await res.json();
+                document.getElementById('profileUsername').value = userProfile.username || '';
+                document.getElementById('profileEmail').value = userProfile.email || '';
+                document.getElementById('profilePhone').value = userProfile.phoneNumber || '';
+                document.getElementById('profilePassword').value = '';
+            }
+        } catch (err) {
+            showToast('Failed to load profile data', true);
+        }
+    }
+
+    // Profile update form handler
+    document.getElementById('updateProfileForm').onsubmit = async function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('profileUsername').value;
+        const email = document.getElementById('profileEmail').value;
+        const phone = document.getElementById('profilePhone').value;
+        const password = document.getElementById('profilePassword').value;
+        
+        const statusDiv = document.getElementById('profileStatus');
+        statusDiv.style.display = 'none';
+        
+        try {
+            const updateData = {
+                username: username,
+                email: email,
+                phoneNumber: phone
+            };
+            
+            // Only include password if provided
+            if (password.trim()) {
+                updateData.password = password;
+            }
+            
+            const res = await fetch(usersApi + '/profile/' + currentUser.id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updateData)
+            });
+            
+            if (res.ok) {
+                const updatedUser = await res.json();
+                // Update current user data
+                currentUser.username = updatedUser.username;
+                currentUser.email = updatedUser.email;
+                currentUser.phoneNumber = updatedUser.phoneNumber;
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                
+                // Update UI
+                updateUserUI();
+                
+                // Show success message
+                statusDiv.style.display = 'block';
+                statusDiv.style.background = '#d4edda';
+                statusDiv.style.color = '#155724';
+                statusDiv.style.border = '1px solid #c3e6cb';
+                statusDiv.innerHTML = '✅ Profile updated successfully!';
+                
+                // Clear password field
+                document.getElementById('profilePassword').value = '';
+                
+                showToast('Profile updated successfully! 🎉');
+            } else {
+                statusDiv.style.display = 'block';
+                statusDiv.style.background = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.style.border = '1px solid #f5c6cb';
+                statusDiv.innerHTML = '❌ Failed to update profile. Please try again.';
+            }
+        } catch (err) {
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#f8d7da';
+            statusDiv.style.color = '#721c24';
+            statusDiv.style.border = '1px solid #f5c6cb';
+            statusDiv.innerHTML = '⚠️ Connection failed. Please check if the backend services are running.';
+        }
+    };
+
+    // --- Super Admin Management Logic ---
+    const adminMgmtMenuLink = document.getElementById('adminMgmtMenuLink');
+    const userMgmtMenuLink = document.getElementById('userMgmtMenuLink');
+    const adminMgmtSection = document.getElementById('adminMgmtSection');
+    const userMgmtSection = document.getElementById('userMgmtSection');
+    // Sidebar link handlers
+    adminMgmtMenuLink.onclick = function() {
+        hideAllSections();
+        adminMgmtSection.style.display = '';
+        showAddAdminSection();
+        window.location.hash = '#adminmgmt';
+    };
+    userMgmtMenuLink.onclick = function() {
+        hideAllSections();
+        userMgmtSection.style.display = '';
+        showAddUserSuperSection();
+        window.location.hash = '#usermgmt';
+    };
+    document.getElementById('backToStoreFromAdminBtn').onclick = function() {
+        adminMgmtSection.style.display = 'none';
+        showStoreSections();
+        window.location.hash = '#products';
+    };
+    document.getElementById('backToStoreFromUserBtn').onclick = function() {
+        userMgmtSection.style.display = 'none';
+        showStoreSections();
+        window.location.hash = '#products';
+    };
+    // Show/hide admin/user add/list sections
+    document.getElementById('showAddAdminBtn').onclick = showAddAdminSection;
+    document.getElementById('showListAdminsBtn').onclick = showListAdminsSection;
+    function showAddAdminSection() {
+        document.getElementById('addAdminSection').style.display = '';
+        document.getElementById('listAdminsSection').style.display = 'none';
+        document.getElementById('addAdminStatus').innerText = '';
+        fetchStoresForAdminAssign();
+    }
+    function showListAdminsSection() {
+        document.getElementById('addAdminSection').style.display = 'none';
+        document.getElementById('listAdminsSection').style.display = '';
+        fetchAdmins();
+    }
+    document.getElementById('showAddUserSuperBtn').onclick = showAddUserSuperSection;
+    document.getElementById('showListUsersSuperBtn').onclick = showListUsersSuperSection;
+    
+    // Store Management
+    document.getElementById('showAddStoreBtn').onclick = showAddStoreSection;
+    document.getElementById('showListStoresBtn').onclick = showListStoresSection;
+    document.getElementById('backToStoreFromStoreMgmtBtn').onclick = function() {
+        document.getElementById('storeMgmtSection').style.display = 'none';
+        showStoreSections();
+        window.location.hash = '#products';
+    };
+    function showAddUserSuperSection() {
+        document.getElementById('addUserSuperSection').style.display = '';
+        document.getElementById('listUsersSuperSection').style.display = 'none';
+        document.getElementById('addUserSuperStatus').innerText = '';
+        fetchStoresForUserAssign();
+        fetchAdminsForUserAssign();
+    }
+    function showListUsersSuperSection() {
+        document.getElementById('addUserSuperSection').style.display = 'none';
+        document.getElementById('listUsersSuperSection').style.display = '';
+        fetchUsersSuper();
+    }
+    function hideAllSections() {
+        adminMgmtSection.style.display = 'none';
+        userMgmtSection.style.display = 'none';
+        document.getElementById('usersSection').style.display = 'none';
+        document.getElementById('profileSection').style.display = 'none';
+        showHideStoreSections(false);
+    }
+    function showStoreSections() {
+        showHideStoreSections(true);
+    }
+    function showHideStoreSections(show) {
+        const productsSections = [
+            document.getElementById('food-catalog').parentElement,
+            document.getElementById('beers-catalog').parentElement,
+            document.getElementById('whiskey-catalog').parentElement,
+            document.getElementById('orders'),
+            document.querySelector('.order-list')
+        ];
+        productsSections.forEach(sec => { if (sec) sec.style.display = show ? '' : 'none'; });
+    }
+    // --- Store Management API Logic ---
+    async function fetchStoresForAdminAssign() {
+        try {
+            const res = await fetch('http://localhost:8082/stores');
+            if (res.ok) {
+                const stores = await res.json();
+                const select = document.getElementById('assignStoreToAdminSelect');
+                select.innerHTML = '<option value="">Select a store...</option>';
+                stores.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.id;
+                    opt.text = s.storeName + ' (' + s.storeType + ')';
+                    select.appendChild(opt);
+                });
+            }
+        } catch (err) {
+            console.error('Failed to fetch stores:', err);
+        }
+    }
+    
+    async function fetchStoresForUserAssign() {
+        try {
+            const res = await fetch('http://localhost:8082/stores');
+            if (res.ok) {
+                const stores = await res.json();
+                const select = document.getElementById('assignStoreToUserSelect');
+                select.innerHTML = '<option value="">Select a store...</option>';
+                stores.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.id;
+                    opt.text = s.storeName + ' (' + s.storeType + ')';
+                    select.appendChild(opt);
+                });
+            }
+        } catch (err) {
+            console.error('Failed to fetch stores:', err);
+        }
+    }
+    
+    // Store Management Functions
+    function showAddStoreSection() {
+        document.getElementById('addStoreSection').style.display = '';
+        document.getElementById('listStoresSection').style.display = 'none';
+        document.getElementById('addStoreStatus').innerText = '';
+    }
+    
+    function showListStoresSection() {
+        document.getElementById('addStoreSection').style.display = 'none';
+        document.getElementById('listStoresSection').style.display = '';
+        fetchStores();
+    }
+    
+    async function fetchStores() {
+        try {
+            const res = await fetch('http://localhost:8082/stores');
+            if (res.ok) {
+                const stores = await res.json();
+                renderStoresTable(stores);
+            }
+        } catch (err) {
+            console.error('Failed to fetch stores:', err);
+        }
+    }
+    
+    function renderStoresTable(stores) {
+        const tbody = document.getElementById('storesTableBody');
+        tbody.innerHTML = '';
+        stores.forEach(s => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style='padding:0.6em 1em;'><strong>ID: ${s.id}</strong><br>${s.storeName}</td>
+                <td style='padding:0.6em 1em;'>${s.storeType || 'General'}</td>
+                <td style='padding:0.6em 1em;'>${s.address || ''}</td>
+                <td style='padding:0.6em 1em;'>${s.phoneNumber || 'N/A'}</td>
+                <td style='padding:0.6em 1em;'>${s.email || 'store@example.com'}</td>
+                <td style='padding:0.6em 1em;'>${s.isActive ? 'Active' : 'Inactive'}</td>
+                <td style='padding:0.6em 1em;'><button class='order-btn' style='background:#d9534f;' onclick='deleteStore(${s.id})'>Delete</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+    
+    async function deleteStore(storeId) {
+        if (!confirm('Are you sure you want to delete this store?')) return;
+        try {
+            const res = await fetch('http://localhost:8082/stores/' + storeId, { method: 'DELETE' });
+            if (res.ok) {
+                fetchStores();
+            } else {
+                alert('Failed to delete store.');
+            }
+        } catch (err) {
+            alert('Failed to delete store. Backend may be down.');
+        }
+    }
+    window.deleteStore = deleteStore;
+    
+    // Store form submission
+    document.getElementById('addStoreForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const storeName = document.getElementById('newStoreName').value;
+        const address = document.getElementById('newStoreAddress').value;
+        const statusDiv = document.getElementById('addStoreStatus');
+        statusDiv.innerText = '';
+        
+        try {
+            const res = await fetch('http://localhost:8082/stores', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ storeName, address })
+            });
+            if (res.ok) {
+                statusDiv.style.color = '#2a8f2a';
+                statusDiv.innerText = 'Store added successfully! Store ID will be auto-generated.';
+                document.getElementById('addStoreForm').reset();
+                showListStoresSection();
+            } else {
+                statusDiv.style.color = '#d9534f';
+                statusDiv.innerText = 'Failed to add store.';
+            }
+        } catch (err) {
+            statusDiv.style.color = '#d9534f';
+            statusDiv.innerText = 'Failed to add store. Backend may be down.';
+        }
+    };
+    
+    // --- Admin Management API Logic ---
+    async function fetchAdmins() {
+        try {
+            const res = await fetch(usersApi + '/admins');
+            if (res.ok) {
+                const admins = await res.json();
+                renderAdminsTable(admins);
+            }
+        } catch (err) {}
+    }
+    function renderAdminsTable(admins) {
+        const tbody = document.getElementById('adminsTableBody');
+        tbody.innerHTML = '';
+        admins.forEach(a => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td style='padding:0.6em 1em;'>${a.username}</td><td style='padding:0.6em 1em;'>${a.email||''}</td><td style='padding:0.6em 1em;'>${a.phoneNumber||''}</td><td style='padding:0.6em 1em;'>${a.businessName||''}</td><td style='padding:0.6em 1em;'><button class='order-btn' style='background:#d9534f;' onclick='deleteAdmin(${a.id})'>Delete</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+    async function deleteAdmin(adminId) {
+        if (!confirm('Are you sure you want to delete this admin?')) return;
+        try {
+            const res = await fetch(usersApi + '/' + adminId, { method: 'DELETE' });
+            if (res.ok) {
+                fetchAdmins();
+            } else {
+                alert('Failed to delete admin.');
+            }
+        } catch (err) {
+            alert('Failed to delete admin. Backend may be down.');
+        }
+    }
+    window.deleteAdmin = deleteAdmin;
+    document.getElementById('addAdminForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const username = document.getElementById('newAdminUsername').value;
+        const password = document.getElementById('newAdminPassword').value;
+        const email = document.getElementById('newAdminEmail').value;
+        const phone = document.getElementById('newAdminPhone').value;
+        const storeId = document.getElementById('assignStoreToAdminSelect').value;
+        const businessName = document.getElementById('newAdminBusinessName').value;
+        const businessType = document.getElementById('newAdminBusinessType').value;
+        const address = document.getElementById('newAdminAddress').value;
+        const statusDiv = document.getElementById('addAdminStatus');
+        statusDiv.innerText = '';
+        
+        if (!storeId) {
+            statusDiv.style.color = '#d9534f';
+            statusDiv.innerText = 'Please select a store.';
+            return;
+        }
+        
+        try {
+            const res = await fetch(usersApi + '/admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, email, phoneNumber: phone, storeId: parseInt(storeId), businessName, businessType, address })
+            });
+            if (res.ok) {
+                statusDiv.style.color = '#2a8f2a';
+                statusDiv.innerText = 'Admin added successfully!';
+                document.getElementById('addAdminForm').reset();
+                showListAdminsSection();
+            } else {
+                statusDiv.style.color = '#d9534f';
+                statusDiv.innerText = 'Failed to add admin.';
+            }
+        } catch (err) {
+            statusDiv.style.color = '#d9534f';
+            statusDiv.innerText = 'Failed to add admin. Backend may be down.';
+        }
+    };
+    // --- User Management API Logic (Super Admin) ---
+    async function fetchAdminsForUserAssign() {
+        // Populate admin dropdown for assigning user
+        try {
+            const res = await fetch(usersApi + '/admins');
+            if (res.ok) {
+                const admins = await res.json();
+                const select = document.getElementById('assignAdminSelect');
+                select.innerHTML = '';
+                admins.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a.id;
+                    opt.text = a.username + (a.businessName ? ' ('+a.businessName+')' : '');
+                    select.appendChild(opt);
+                });
+            }
+        } catch (err) {}
+    }
+    async function fetchUsersSuper() {
+        try {
+            const res = await fetch(usersApi + '/all');
+            if (res.ok) {
+                const users = await res.json();
+                renderUsersSuperTable(users);
+            }
+        } catch (err) {}
+    }
+    function renderUsersSuperTable(users) {
+        const tbody = document.getElementById('usersSuperTableBody');
+        tbody.innerHTML = '';
+        users.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td style='padding:0.6em 1em;'>${u.username}</td><td style='padding:0.6em 1em;'>${u.email||''}</td><td style='padding:0.6em 1em;'>${u.phoneNumber||''}</td><td style='padding:0.6em 1em;'>${u.adminId||''}</td><td style='padding:0.6em 1em;'><button class='order-btn' style='background:#d9534f;' onclick='deleteUserSuper(${u.id})'>Delete</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+    async function deleteUserSuper(userId) {
+        if (!confirm('Are you sure you want to delete this user?')) return;
+        try {
+            const res = await fetch(usersApi + '/' + userId, { method: 'DELETE' });
+            if (res.ok) {
+                fetchUsersSuper();
+            } else {
+                alert('Failed to delete user.');
+            }
+        } catch (err) {
+            alert('Failed to delete user. Backend may be down.');
+        }
+    }
+    window.deleteUserSuper = deleteUserSuper;
+    document.getElementById('addUserSuperForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const username = document.getElementById('newUserSuperUsername').value;
+        const password = document.getElementById('newUserSuperPassword').value;
+        const email = document.getElementById('newUserSuperEmail').value;
+        const phone = document.getElementById('newUserSuperPhone').value;
+        const storeId = document.getElementById('assignStoreToUserSelect').value;
+        const adminId = document.getElementById('assignAdminSelect').value;
+        const statusDiv = document.getElementById('addUserSuperStatus');
+        statusDiv.innerText = '';
+        
+        if (!storeId || !adminId) {
+            statusDiv.style.color = '#d9534f';
+            statusDiv.innerText = 'Please select both store and admin.';
+            return;
+        }
+        
+        try {
+            const res = await fetch(usersApi + '/user?adminId=' + adminId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, email, phoneNumber: phone, storeId: parseInt(storeId) })
+            });
+            if (res.ok) {
+                statusDiv.style.color = '#2a8f2a';
+                statusDiv.innerText = 'User added successfully!';
+                document.getElementById('addUserSuperForm').reset();
+                showListUsersSuperSection();
+            } else {
+                statusDiv.style.color = '#d9534f';
+                statusDiv.innerText = 'Failed to add user.';
+            }
+        } catch (err) {
+            statusDiv.style.color = '#d9534f';
+            statusDiv.innerText = 'Failed to add user. Backend may be down.';
+        }
+    };
 
     renderProducts();
     fetchOrders();
