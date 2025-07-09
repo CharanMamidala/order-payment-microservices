@@ -14,6 +14,9 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     // Get all active products (for users to browse)
     @GetMapping
     public List<Product> getAllActiveProducts() {
@@ -46,7 +49,22 @@ public class ProductController {
 
     // ADMIN: Add new product
     @PostMapping
-    public Product addProduct(@RequestBody Product product, @RequestParam Long adminId, @RequestParam Long storeId) {
+    public Product addProduct(@RequestBody Product product, @RequestParam Long adminId, @RequestParam(required = false) Long storeId) {
+        // Role check: ensure adminId belongs to an active ADMIN
+        User admin = userRepository.findById(adminId)
+                .filter(u -> Boolean.TRUE.equals(u.getIsActive()) && "ADMIN".equals(u.getUserType()))
+                .orElseThrow(() -> new RuntimeException("Only active ADMINs can add products. Invalid adminId."));
+        // If storeId is not provided, infer from admin
+        if (storeId == null) {
+            storeId = admin.getStoreId();
+        }
+        if (storeId == null) {
+            throw new RuntimeException("Store ID is required and could not be inferred from admin.");
+        }
+        // Ensure admin is linked to the given store
+        if (!storeId.equals(admin.getStoreId())) {
+            throw new RuntimeException("Admin is not linked to the given store. Cannot add product.");
+        }
         product.setAdminId(adminId);
         product.setStoreId(storeId);
         product.setIsActive(true);
