@@ -3,9 +3,18 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - echo "=== DEBUG: Environment Variables ==="
+      - echo "AWS_ACCOUNT_ID: '$AWS_ACCOUNT_ID'"
+      - echo "AWS_DEFAULT_REGION: '$AWS_DEFAULT_REGION'"
+      - echo "AWS_REGION: '$AWS_REGION'"
+      - echo "=== END DEBUG ==="
       - echo Logging in to Amazon ECR...
       - aws --version
-      - $(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com)
+      - echo "Account ID: $AWS_ACCOUNT_ID"
+      - echo "Region: $AWS_DEFAULT_REGION"
+      - echo "Trying with environment variables..."
+      - $(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com) || echo "Environment variables failed, trying hardcoded values..."
+      - $(aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614056699201.dkr.ecr.us-east-1.amazonaws.com)
   build:
     commands:
       - echo Build order-service...
