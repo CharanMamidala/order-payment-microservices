@@ -46,18 +46,20 @@ public class UserController {
         // Validate that adminId exists and is an ADMIN
         Optional<User> adminOpt = userRepository.findById(adminId);
         if (!adminOpt.isPresent() || !"ADMIN".equals(adminOpt.get().getUserType())) {
-            throw new RuntimeException("Invalid admin ID");
+            throw new RuntimeException("Invalid admin ID: must be an active ADMIN");
         }
-        
+        User admin = adminOpt.get();
+        // If storeId is not provided, infer from admin
         if (user.getStoreId() == null) {
-            throw new RuntimeException("Store ID is required");
+            user.setStoreId(admin.getStoreId());
         }
-        
+        if (user.getStoreId() == null) {
+            throw new RuntimeException("Store ID is required and could not be inferred from admin");
+        }
         // Validate that admin is in the same store
-        if (!user.getStoreId().equals(adminOpt.get().getStoreId())) {
+        if (!user.getStoreId().equals(admin.getStoreId())) {
             throw new RuntimeException("Store mismatch between user and admin");
         }
-        
         user.setUserType("USER");
         user.setAdminId(adminId);
         user.setIsActive(true);

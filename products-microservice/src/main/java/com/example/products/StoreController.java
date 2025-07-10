@@ -150,4 +150,43 @@ public class StoreController {
     public ResponseEntity<String> healthCheck() {
         return ResponseEntity.ok("Store Service is healthy! Status: UP");
     }
+
+    // SUPER_ADMIN: Create new store and assign admin in one step
+    @PostMapping("/with-admin")
+    public ResponseEntity<?> createStoreWithAdmin(@RequestBody Store store, @RequestParam String adminUsername, @RequestParam String adminPassword, @RequestParam String adminEmail) {
+        // Create the store
+        if (store.getStoreType() == null || store.getStoreType().trim().isEmpty()) {
+            store.setStoreType("General");
+        }
+        if (store.getDescription() == null || store.getDescription().trim().isEmpty()) {
+            store.setDescription("Store created by super admin");
+        }
+        if (store.getPhoneNumber() == null || store.getPhoneNumber().trim().isEmpty()) {
+            store.setPhoneNumber("N/A");
+        }
+        if (store.getEmail() == null || store.getEmail().trim().isEmpty()) {
+            store.setEmail("store@example.com");
+        }
+        store.setCreatedAt(java.time.LocalDateTime.now());
+        store.setUpdatedAt(java.time.LocalDateTime.now());
+        store.setIsActive(true);
+        Store savedStore = storeRepository.save(store);
+
+        // Create the admin for this store
+        User admin = new User();
+        admin.setUsername(adminUsername);
+        admin.setPassword(adminPassword);
+        admin.setUserType("ADMIN");
+        admin.setEmail(adminEmail);
+        admin.setIsActive(true);
+        admin.setStoreId(savedStore.getId());
+        User savedAdmin = userRepository.save(admin);
+        savedAdmin.setPassword(null); // Don't return password
+
+        // Return both store and admin
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("store", savedStore);
+        response.put("admin", savedAdmin);
+        return ResponseEntity.ok(response);
+    }
 } 
