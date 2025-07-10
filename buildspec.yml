@@ -3,37 +3,14 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo "=== DEBUG: Environment Variables ==="
-      - echo "AWS_ACCOUNT_ID: '$AWS_ACCOUNT_ID'"
-      - echo "AWS_DEFAULT_REGION: '$AWS_DEFAULT_REGION'"
-      - echo "AWS_REGION: '$AWS_REGION'"
-      - echo "=== END DEBUG ==="
-      - echo Logging in to Amazon ECR...
+      - echo "Hello from CodeBuild"
       - aws --version
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614056699201.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
-      - echo Build order-service...
-      - docker build -t order-service ./order-microservice
-      - docker tag order-service:latest 614056699201.dkr.ecr.us-east-1.amazonaws.com/order-service:latest
-      - echo Build payment-service...
-      - docker build -t payment-service ./payment-microservice2
-      - docker tag payment-service:latest 614056699201.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
-      - echo Build products-service...
-      - docker build -t products-service ./products-microservice
-      - docker tag products-service:latest 614056699201.dkr.ecr.us-east-1.amazonaws.com/products-service:latest
-      - echo Build frontend...
-      - docker build -t frontend ./frontend
-      - docker tag frontend:latest 614056699201.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+      - echo "Build phase"
   post_build:
     commands:
-      - echo Pushing images...
-      - docker push 614056699201.dkr.ecr.us-east-1.amazonaws.com/order-service:latest
-      - docker push 614056699201.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
-      - docker push 614056699201.dkr.ecr.us-east-1.amazonaws.com/products-service:latest
-      - docker push 614056699201.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
-      - echo Writing image definitions...
-      - echo '[{"name":"order-service","imageUri":"614056699201.dkr.ecr.us-east-1.amazonaws.com/order-service:latest"},{"name":"payment-service","imageUri":"614056699201.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest"},{"name":"products-service","imageUri":"614056699201.dkr.ecr.us-east-1.amazonaws.com/products-service:latest"},{"name":"frontend","imageUri":"614056699201.dkr.ecr.us-east-1.amazonaws.com/frontend:latest"}]' > imagedefinitions.json
+      - echo "Post build phase"
 artifacts:
   files:
-    - imagedefinitions.json 
+    - '**/*' 
