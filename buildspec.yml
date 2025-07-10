@@ -10,6 +10,18 @@ phases:
   build:
     commands:
       - echo "Build phase"
+      - echo "Building order-service..."
+      - docker build -t order-service ./order-microservice
+      - docker tag order-service:latest 614056699201.dkr.ecr.us-east-1.amazonaws.com/order-service:latest
+      - echo "Building payment-service..."
+      - docker build -t payment-service ./payment-microservice2
+      - docker tag payment-service:latest 614056699201.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
+      - echo "Building products-service..."
+      - docker build -t products-service ./products-microservice
+      - docker tag products-service:latest 614056699201.dkr.ecr.us-east-1.amazonaws.com/products-service:latest
+      - echo "Building frontend..."
+      - docker build -t frontend ./frontend
+      - docker tag frontend:latest 614056699201.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
   post_build:
     commands:
       - echo "Post build phase"
