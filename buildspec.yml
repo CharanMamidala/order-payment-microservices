@@ -25,6 +25,13 @@ phases:
   post_build:
     commands:
       - echo "Post build phase"
+      - echo "Pushing images to ECR..."
+      - docker push 614056699201.dkr.ecr.us-east-1.amazonaws.com/order-service:latest
+      - docker push 614056699201.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
+      - docker push 614056699201.dkr.ecr.us-east-1.amazonaws.com/products-service:latest
+      - docker push 614056699201.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+      - echo "Creating image definitions..."
+      - echo '[{"name":"order-service","imageUri":"614056699201.dkr.ecr.us-east-1.amazonaws.com/order-service:latest"},{"name":"payment-service","imageUri":"614056699201.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest"},{"name":"products-service","imageUri":"614056699201.dkr.ecr.us-east-1.amazonaws.com/products-service:latest"},{"name":"frontend","imageUri":"614056699201.dkr.ecr.us-east-1.amazonaws.com/frontend:latest"}]' > imagedefinitions.json
 artifacts:
   files:
-    - '**/*' 
+    - imagedefinitions.json 
